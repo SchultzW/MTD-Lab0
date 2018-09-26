@@ -18,8 +18,8 @@ namespace MTDClasses
 
         public Domino(int p1, int p2)
         {
-            this.side1 = p1;
-            this.side2 = p2;
+            this.Side1 = p1;
+            this.Side2 = p2;
         }
 
         // don't use an auto implemented property because of the validation in the setter - p 390
@@ -27,7 +27,7 @@ namespace MTDClasses
         {
             get
             {
-                return Side1;
+                return side1;
             }
             set
             {
@@ -43,7 +43,7 @@ namespace MTDClasses
         {
             get
             {
-                return Side2;
+                return side2;
             }
             set
             {
