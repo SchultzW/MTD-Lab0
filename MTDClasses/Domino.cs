@@ -56,12 +56,19 @@ namespace MTDClasses
         //flips values of side1 and side2
         public void Flip()
         {
-            
+            int temp = side1;
+            side1 = side2;
+            side2 = temp;
         }
 
         /// This is how I would have done this in 233N
         public int Score
         {
+            
+            get
+            {
+                return side1 + side2;
+            }
         }
 
         // because it's a read only property, I can use the "expression bodied syntax" or a lamdba expression - p 393
@@ -70,9 +77,15 @@ namespace MTDClasses
         //ditto for the first version of this method and the next one
         public bool IsDouble()
         {
+            if (side1 == side2)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
-        // could you do this one using a lambda expression?
+        // could you do this one using a lambda expression? //public bool IsDouble() => (side1 == side2) ? true : false;
         public string Filename
         {
             get
@@ -81,7 +94,7 @@ namespace MTDClasses
             }
         }
 
-        //public bool IsDouble() => (side1 == side2) ? true : false;
+        
 
         public override string ToString()
         {
@@ -91,6 +104,13 @@ namespace MTDClasses
         // could you overload the == and != operators?
         public override bool Equals(object obj)
         {
+            if (obj == null)
+                return false;
+            Domino d = (Domino)obj;
+            if (this.side1 == d.side1 && this.side2 == d.side2)
+                return true;
+            else
+                return false;
         }
 
         public override int GetHashCode()
