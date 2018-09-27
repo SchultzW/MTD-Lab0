@@ -46,7 +46,7 @@ namespace MTDTests
             Assert.AreEqual(1, d12.Side1);
             Assert.AreEqual(2, d12.Side2);
         }
-
+        
         [Test]
         public void TestSettersValid()
         {

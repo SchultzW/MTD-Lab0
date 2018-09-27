@@ -9,25 +9,50 @@ namespace MTDClasses
     public class BoneYard
     {
         private List<Domino> boneYardList;
-
+        /// <summary>
+        /// creates a new boardyard list and populates it.
+        /// </summary>
+        /// <param name="maxDots"></param>
         public BoneYard(int maxDots)
         {
-            //creates lists of dominos
-            boneYardList = new List<Domino>();
-            for (int i = 0; i < maxDots; i++)
+            if (maxDots < 6 || maxDots > 12)
+                throw new ArgumentException("Invalid Max Dots");
+            else
             {
-                for (int j = 0; j < maxDots; j++)
+                Domino blank = new Domino(0, 0);
+                boneYardList = new List<Domino>();
+                boneYardList.Add(blank);
+                for (int i = 0; i <= maxDots; i++)
                 {
-                    Domino d = new Domino(i, j);
-                    boneYardList.Add(d);
-                }
-            }
+                    for (int j = 0; j <= maxDots; j++)
+                    {
+                        bool flag = false;
+                        Domino d = new Domino(i, j);
+                        Domino dFlip = new Domino(j, i);
+                        foreach(Domino d2Check in boneYardList)
+                        {
 
+                            if (d.Equals(d2Check) || dFlip.Equals(d2Check))
+                            {
+                                flag = true;
+                                break;
+                            }
+                            else
+                                flag = false;
+                           
+                        }
+                        if(flag==false)
+                        {
+                            boneYardList.Add(d);
+                        }
+                    }
+                }
+                
+            }
         }
         /// <summary>
-        /// 
+        /// shuffles the dominos in the boneyard list.
         /// </summary>
-
         public void Shuffle()
         {
             //shuffles the boneyard up
@@ -46,7 +71,10 @@ namespace MTDClasses
             }
 
         }
-
+        /// <summary>
+        /// tests if the boneyard is empty and returns true or false.
+        /// </summary>
+        /// <returns></returns>
         public bool IsEmpty()
         {
             //checks if boneyard is empty
@@ -55,7 +83,10 @@ namespace MTDClasses
             else
                 return false;
         }
-
+        /// <summary>
+        /// checks how many bones are in the bone yard and returns an int
+        /// </summary>
+        /// <returns></returns>
         public int DominosRemaining()
         {
             //returns the # of bones left
@@ -64,7 +95,10 @@ namespace MTDClasses
                 return count;
         }
     
-
+        /// <summary>
+        /// draws a bone from the bottom of the boneyard
+        /// </summary>
+        /// <returns></returns>
         public Domino Draw()
         {
             Domino d = boneYardList[0];
@@ -72,7 +106,11 @@ namespace MTDClasses
             return d;
 
         }
-
+        /// <summary>
+        /// creates indexer for boneyard class
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public Domino this[int index]
         {
             get
@@ -86,7 +124,10 @@ namespace MTDClasses
             }
 
         }
-
+        /// <summary>
+        /// returns a string of all the bones in the boneyard list.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             string message = "";

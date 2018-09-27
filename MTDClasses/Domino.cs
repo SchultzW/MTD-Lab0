@@ -11,11 +11,17 @@ namespace MTDClasses
     {
         private int side1;
         private int side2;
-
+        /// <summary>
+        /// default constructor
+        /// </summary>
         public Domino()
         {
         }
-
+        /// <summary>
+        /// constructor with 2 param
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
         public Domino(int p1, int p2)
         {
             this.Side1 = p1;
@@ -23,6 +29,9 @@ namespace MTDClasses
         }
 
         // don't use an auto implemented property because of the validation in the setter - p 390
+        /// <summary>
+        /// side1 setter and getter
+        /// </summary>
         public int Side1
         {
             get
@@ -38,7 +47,9 @@ namespace MTDClasses
             
         }
 
-
+        /// <summary>
+        /// side2 setter and getter
+        /// </summary>
         public int Side2
         {
             get
@@ -53,7 +64,9 @@ namespace MTDClasses
             }
 
         }
-        //flips values of side1 and side2
+        /// <summary>
+        /// flips the values of the 2 sides
+        /// </summary>
         public void Flip()
         {
             int temp = side1;
@@ -62,6 +75,10 @@ namespace MTDClasses
         }
 
         /// This is how I would have done this in 233N
+        ///<summary>
+        ///this adds the 2 sides and returns an int with the score
+        ///</summary>
+
         public int Score
         {
             
@@ -75,6 +92,10 @@ namespace MTDClasses
         //public int Score => side1 + side2;
 
         //ditto for the first version of this method and the next one
+        /// <summary>
+        /// checks if the domino is double sided or not
+        /// </summary>
+        /// <returns></returns>
         public bool IsDouble()
         {
             if (side1 == side2)
@@ -86,6 +107,9 @@ namespace MTDClasses
         }
 
         // could you do this one using a lambda expression? //public bool IsDouble() => (side1 == side2) ? true : false;
+        /// <summary>
+        /// this has to do with creating a filename for the domino to match with a picture.
+        /// </summary>
         public string Filename
         {
             get
@@ -95,13 +119,21 @@ namespace MTDClasses
         }
 
         
-
+        /// <summary>
+        /// returns the number on each side of a domino
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return String.Format("Side 1: {0}  Side 2: {1}", side1, side2);
         }
 
         // could you overload the == and != operators?
+        /// <summary>
+        /// overloads the equals
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -112,7 +144,10 @@ namespace MTDClasses
             else
                 return false;
         }
-
+        /// <summary>
+        /// overrides hashcode for overriding equals
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return ToString().GetHashCode();
