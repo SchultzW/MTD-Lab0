@@ -8,9 +8,12 @@ namespace MTDClasses
 {
     public class PlayerTrain
     {
-        /*
+        //private Hand hand;
+        private bool isOpen;
         public PlayerTrain(Hand h): base()
         {
+            //playTrain has a hand that is dealing with. 
+            
         }
 
         /// <summary>
@@ -20,6 +23,8 @@ namespace MTDClasses
         /// <param name="engineValue">Represents the first playable value on the train</param>
         public PlayerTrain(Hand h, int engineValue) : base (engineValue)
         {
+
+            this.Hand = h;
         }
 
         /// <summary>
@@ -28,6 +33,12 @@ namespace MTDClasses
         /// </summary>
         public bool IsOpen
         {
+        
+            get
+            {
+                return isOpen;
+            }
+           
         }
 
         /// <summary>
@@ -35,6 +46,8 @@ namespace MTDClasses
         /// </summary>
         public void Open()
         {
+            //true other players can play on it.
+            isOpen = true;
         }
 
         /// <summary>
@@ -42,11 +55,14 @@ namespace MTDClasses
         /// </summary>
         public void Close()
         {
+            isOpen = false;
+            //close the train so others cannot play on it. true() other players cnanot play0
         }
 
         /// <summary>
         /// Can the domino d be played by the hand h on this train?
         /// If it can be played, must it be flipped to do so?
+        /// must test isOpen if its true or fasle. player train is only playable to another play if it is open
         /// </summary>
         /// <param name="d"></param>
         /// <param name="mustFlip"></param>
@@ -54,7 +70,25 @@ namespace MTDClasses
         /// <returns></returns>
         public override bool IsPlayable(Hand h, Domino d, out bool mustFlip)
         {
+
+            if (d.Side1.Equals(base.PlayableValue))
+            {
+
+                mustFlip = false;
+                return true;
+            }
+            else if (d.Side2.Equals(Train.PlayableValue))
+            {
+                mustFlip = true;
+                return true;
+            }
+            else
+            {
+                mustFlip = false;
+                return false;
+            }
+
         }
-        */
+        
     }
 }
