@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MTDClasses
 {
-    public class MexicanTrain
+    public class MexicanTrain:Train
     {
 
             /*over ride or extend is playable method
@@ -19,15 +19,34 @@ namespace MTDClasses
              */
         public MexicanTrain()
         {
-
+            EngineValue = 12;
+            List<Domino> playerTrain = new List<Domino>();
         }
-        public MexicanTrain(int engineValue)
+        public MexicanTrain(int engineValue): base(engineValue)
+        {
+            this.EngineValue = engineValue;
+            List<Domino> playerTrain = new List<Domino>();
+        }
+        public override bool IsPlayable(Hand h, Domino d,out bool mustFlip)
         {
 
-        }
-        public bool IsPlayable(Hand h, out bool mustFlip)
-        {
 
+            if (d.Side1.Equals(base.PlayableValue))
+            {
+
+                mustFlip = false;
+                return true;
+            }
+            else if (d.Side2.Equals(base.PlayableValue))
+            {
+                mustFlip = true;
+                return true;
+            }
+            else
+            {
+                mustFlip = false;
+                return false;
+            }
         }
     }
 }

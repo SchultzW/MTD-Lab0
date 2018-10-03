@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoneyardTests.cs" />
+    <Compile Include="HandTests.cs" />
+    <Compile Include="MexicanTrainTest.cs" />
+    <Compile Include="PlayerTrainTest.cs" />
+    <Compile Include="TrainTest.cs" />
     <Compile Include="DominoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -11,7 +11,7 @@ namespace MTDClasses
     public abstract class Train
     {
 
-        private List<Domino> dominos;
+        private List<Domino> dominos=new List<Domino>();
         private int engineValue;
 
       
@@ -31,13 +31,16 @@ namespace MTDClasses
 
         }
 
-        public int Count => dominos.Count();
-        //public int Count
-        //{
-          
-            
-        
-        //}
+        //public int Count => dominos.Count();
+        public int Count
+        {
+            get
+            {
+                return dominos.Count;
+            }
+
+
+        }
 
         /// <summary>
         /// The first domino value that must be played on a train
@@ -61,7 +64,7 @@ namespace MTDClasses
         {
             get
             {
-                if (dominos.Count == 0)
+                if (dominos.Count.Equals(0))
                     return true;
                 else
                     return false;
@@ -70,15 +73,24 @@ namespace MTDClasses
         /// <summary>
         /// looks at the list of dominos and returns the last domino that was played.
         /// </summary>
-        public Domino LastDomino => dominos[Count - 1];
-        //public Domino LastDomino
-        //{
-        //    get
-        //    {
+        //public Domino LastDomino => dominos[Count - 1];
+        public Domino LastDomino
+        {
+            get
+            {
+                try
+                {
+                    return dominos[Count - 1];
+                }
+                catch
+                {
+                    int val= engineValue;
+                    Domino d = new Domino(val, val);
+                    return d;
+                }
+            }
 
-        //    }
-
-        //}
+        }
 
         /// <summary>
         /// Side2 of the last domino in the train.  It's the value of the next domino that can be played.
@@ -94,7 +106,8 @@ namespace MTDClasses
 
         public void Add(Domino d)
         {
-                //adds a bone to the trian(dominoes list)
+            //adds a bone to the trian(dominoes list)
+            dominos.Add(d);
         }
 
         /// <summary>

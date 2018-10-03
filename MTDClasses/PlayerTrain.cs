@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 namespace MTDClasses
 {
-    public class PlayerTrain
+    public class PlayerTrain:Train
     {
         //private Hand hand;
         private bool isOpen;
+        private Hand Hand;
         public PlayerTrain(Hand h): base()
         {
             //playTrain has a hand that is dealing with. 
-            
+            this.Hand = h;
+            this.EngineValue = 12;
+            List<Domino> playerTrain = new List<Domino>();
+
         }
 
         /// <summary>
@@ -25,6 +29,8 @@ namespace MTDClasses
         {
 
             this.Hand = h;
+            this.EngineValue = engineValue;
+            List<Domino> playerTrain = new List<Domino>();
         }
 
         /// <summary>
@@ -77,7 +83,7 @@ namespace MTDClasses
                 mustFlip = false;
                 return true;
             }
-            else if (d.Side2.Equals(Train.PlayableValue))
+            else if (d.Side2.Equals(base.PlayableValue))
             {
                 mustFlip = true;
                 return true;
