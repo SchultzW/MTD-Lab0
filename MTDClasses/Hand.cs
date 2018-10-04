@@ -13,7 +13,7 @@ namespace MTDClasses
     /// </summary>
     public class Hand
     {
-        private List<Domino> handOfDominos;
+        private List<Domino> handOfDominos=new List<Domino>();
         /// <summary>
         /// The list of dominos in the hand
         /// </summary>
@@ -42,7 +42,7 @@ namespace MTDClasses
             
             if(numPlayers==2|numPlayers==3|numPlayers==4)
             {
-                for (int i = 0; 0 < 10; i++)
+                for (int i = 0; i <= 10; i++)
                 {
                     handOfDominos.Add(by.Draw());
                 }

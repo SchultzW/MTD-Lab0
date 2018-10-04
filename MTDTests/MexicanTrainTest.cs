@@ -34,7 +34,14 @@ namespace MTDTests
         [Test]
         public void TestConstructors()
         {
-           
+            Assert.IsTrue(mT.EngineValue.Equals(12));
+            Assert.IsTrue(mT1.EngineValue.Equals(12));
+        }
+        [Test]
+        public void TestIsPlayable()
+        {
+            Assert.IsTrue(mT.IsPlayable(h, d3, out bool mustFlip));
+
         }
     }
 }
