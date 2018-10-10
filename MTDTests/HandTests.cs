@@ -28,12 +28,18 @@ namespace MTDTests
             pT = new PlayerTrain(h);
               
         }
+        /// <summary>
+        /// tests the add method
+        /// </summary>
         [Test]
         public void TestAdd()
         {
             h.Add(d);
             Assert.IsTrue(h.Count.Equals(1));
         }
+        /// <summary>
+        /// tests the is empty method. removes everything from the hand
+        /// </summary>
         [Test]
         public void TestIsEmpty()
         {
@@ -43,6 +49,9 @@ namespace MTDTests
             }
             Assert.IsTrue(h.IsEmpty);
         }
+        /// <summary>
+        /// tests that the score adds up
+        /// </summary>
         [Test]
         public void TestScore()
         {

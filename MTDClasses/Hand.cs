@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,13 +12,15 @@ namespace MTDClasses
     /// <summary>
     /// Represents a hand of dominos //list=handofdominoes
     /// </summary>
-    public class Hand
+    public class Hand:IEnumerable<Domino>
     {
+        public delegate void EmptyHandler(Hand h);
+        public event EmptyHandler AlmostEmpty;
         private List<Domino> handOfDominos=new List<Domino>();
         /// <summary>
         /// The list of dominos in the hand
         /// </summary>
-
+        public void HandleEmpty(Hand h) { }
         /// <summary>
         /// Creates an empty hand
         /// </summary>
@@ -62,6 +65,7 @@ namespace MTDClasses
                     handOfDominos.Add(by.Draw());
                 }
             }
+            AlmostEmpty = new EmptyHandler(HandleEmpty);
                 
         }
 
@@ -359,6 +363,16 @@ namespace MTDClasses
         /// <returns></returns>
         public Domino Play(Train t)
         {
+            /*
+             * int playablevalue=t.playablevalue;
+             * int index= indexofdomino(playablevalue)
+             * inf index !=1)
+             * {
+             * domino playable =this[index];
+             * play(index t)
+             * return playable
+             * }
+             */
             bool mustFlip, playable;
             Domino d1;
             for(int i=0;i<this.Count;i++)
@@ -386,6 +400,18 @@ namespace MTDClasses
             }
             return message;
         }
-        
+
+        public IEnumerator<Domino> GetEnumerator()
+        {
+            foreach(Domino item in handOfDominos)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

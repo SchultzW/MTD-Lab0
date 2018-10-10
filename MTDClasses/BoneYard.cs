@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace MTDClasses
 {
-    public class BoneYard
+    public class BoneYard:IEnumerable<Domino>
     {
         private List<Domino> boneYardList;
-        
+        public delegate void ChangeHandlerBY(List<Domino> list);
+        public event ChangeHandlerBY AlmostEmptyBY;
+        public void HandleEmptyBY(List<Domino> list) { }
         /// <summary>
         /// creates a new boardyard list and populates it.
         /// </summary>
@@ -50,6 +53,7 @@ namespace MTDClasses
                 }
                 
             }
+            AlmostEmptyBY = new ChangeHandlerBY(HandleEmptyBY);
         }
         /// <summary>
         /// shuffles the dominos in the boneyard list.
@@ -138,7 +142,19 @@ namespace MTDClasses
             }
             return message;
         }
-       
+
+        public IEnumerator<Domino> GetEnumerator()
+        {
+            foreach(Domino item in boneYardList)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
