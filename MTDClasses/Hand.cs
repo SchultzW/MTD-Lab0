@@ -16,7 +16,7 @@ namespace MTDClasses
     {
         public delegate void EmptyHandler(Hand h);
         public event EmptyHandler AlmostEmpty;
-        private List<Domino> handOfDominos=new List<Domino>();
+        private List<Domino> handOfDominos;
         /// <summary>
         /// The list of dominos in the hand
         /// </summary>
@@ -26,7 +26,7 @@ namespace MTDClasses
         /// </summary>
         public Hand()
         {
-            List<Domino> handOfDominos = new List<Domino>();
+           handOfDominos = new List<Domino>();
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace MTDClasses
         /// <param name="numPlayers"></param>
         public Hand(BoneYard by, int numPlayers)
         {
-            List<Domino> handOfDominos = new List<Domino>();
+            handOfDominos = new List<Domino>();
             
             if(numPlayers==2|numPlayers==3|numPlayers==4)
             {
@@ -225,18 +225,23 @@ namespace MTDClasses
         public int IndexOfHighDouble()
         {
             Domino d;
-            int index = 0;
-            for(int i=12;i<6;i--)
+            int index = -1;
+            for(int i=12;i>0;i--)
             {
-                for(int j=0;i<handOfDominos.Count;j++)
+                for(int j=0;j<handOfDominos.Count;j++)
                 {
                     d = handOfDominos[j];
                     if (d.Side1.Equals(i) && d.Side2.Equals(i))
+                    {
                         index = j;
-                    break;
+                        return index;
+                        
+                    }
+                        
                 }
             }
             return index;
+
         }
 
         public Domino this[int index]
