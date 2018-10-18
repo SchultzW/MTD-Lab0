@@ -24,8 +24,8 @@ namespace MTDUserInterface
         List<PictureBox> userHandPBs;
         List<PictureBox> computerTrainPBS,playersTrainPBS, mexicanTrainPBS;
         int nextDrawIndex = 0;
-        Domino userDominoInPlay;
-        int indexOfDominoInPlay;
+        //Domino userDominoInPlay;
+        //int indexOfDominoInPlay;
         const string OPEN = "Open";
         const string CLOSED = "Closed";
         
@@ -406,7 +406,14 @@ namespace MTDUserInterface
             userHandPBs.Add(pB);
             nextDrawIndex++;
             LoadDomino(userHandPBs[index], playersHand[index]);
-            
+            /*
+             * playersHand.Draw(boneyard);
+            int index = playersHand.Count-1;
+           
+            userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
+            nextDrawIndex++;
+            LoadDomino(userHandPBs[index], playersHand[index]);
+             */
         }
 
         // open the user's train, update the ui and let the computer make a move
