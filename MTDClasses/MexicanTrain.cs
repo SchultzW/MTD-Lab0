@@ -17,7 +17,7 @@ namespace MTDClasses
              * 
              * 
              */
-        public MexicanTrain()
+        public MexicanTrain():base()
         {
             EngineValue = 12;
             List<Domino> playerTrain = new List<Domino>();
@@ -30,7 +30,7 @@ namespace MTDClasses
         public override bool IsPlayable(Hand h, Domino d,out bool mustFlip)
         {
 
-
+            //is defined in base class dont need to do it this way.
             if (d.Side1.Equals(base.PlayableValue))
             {
 
@@ -47,6 +47,7 @@ namespace MTDClasses
                 mustFlip = false;
                 return false;
             }
+            //return 
         }
     }
 }

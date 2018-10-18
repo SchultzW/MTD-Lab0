@@ -24,9 +24,14 @@ namespace MTDUserInterface
         List<PictureBox> userHandPBs;
         List<PictureBox> computerTrainPBS,playersTrainPBS, mexicanTrainPBS;
         int nextDrawIndex = 0;
+        Domino userDominoInPlay;
+        int indexOfDominoInPlay;
+        const string OPEN = "Open";
+        const string CLOSED = "Closed";
+        
 
 
-		
+
         #region Methods
 
         // loads the image of a domino into a picture box
@@ -115,6 +120,19 @@ namespace MTDUserInterface
         // disables the hand pbs and disables appropriate buttons
         public void UserPlayOnTrain(Domino d, Train train, List<PictureBox> trainPBs)
         {
+
+            int index=playersHand.IndexOfDomino(d.Side1, d.Side2);
+            playersTrainPBS.RemoveAt(index);
+
+            RemovePBFromForm(playersTrainPBS[index]);
+            playersHand.Play(d, train);
+            LoadDomino(trainPBs[0], d);
+            
+
+            DisableUserHandPBs();
+            passButton.Enabled = false;
+            drawButton.Enabled = false;
+
         }
 
         // adds a domino picture to a train
@@ -132,6 +150,47 @@ namespace MTDUserInterface
         // returns false
         public bool MakeComputerMove(bool canDraw)
         {
+            bool mustFlip = false;
+            foreach(Domino d in computersHand)
+            {
+                if(mexicanTrain.IsPlayable(computersHand, d, out mustFlip)==true)
+                {
+                    if (mustFlip == true)
+                        d.Flip();
+                    computersHand.Play(mexicanTrain);
+                    break;
+                }
+                else if(playersTrain.IsOpen==true)
+                {
+                    if(playersTrain.IsPlayable(computersHand, d, out mustFlip)==true)
+                    {
+                        if (mustFlip == true)
+                            d.Flip();
+                        computersHand.Play(playersTrain);
+                        break;
+                    }
+                }
+                else
+                {
+                    computersHand.Draw(boneyard);
+                    Domino drawedD = computersHand[computersHand.Count - 1];
+                    if (playersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == true)
+                    {
+                        if (mustFlip == true)
+                            d.Flip();
+                        computersHand.Play(playersTrain);
+                        break;
+                    }
+                    else
+                    {
+                        if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip)==false)
+                            break;
+                    }
+                    
+
+                }
+
+            }
 			return true;
         }
 
@@ -141,11 +200,27 @@ namespace MTDUserInterface
         // determine if the computer won or if it's now the user's turn
         public void CompleteComputerMove()
         {
+            userLabel.ForeColor = Color.Red;
+            computerLabel.ForeColor = Color.Green;
+            System.Threading.Thread.Sleep(10000);//makes AI appear to be thinking?
+            MakeComputerMove(false);
+            if (computersHand.Count == 0)
+                Win();
+            else
+                EnableUserMove();
+
+
+
         }
 
         // enable the hand pbs, buttons and update labels on the UI
         public void EnableUserMove()
         {
+            userLabel.ForeColor = Color.Green;
+            computerLabel.ForeColor = Color.Red;
+            EnableUserHandPBs();
+            drawButton.Enabled = true;
+            passButton.Enabled = true;
         }
 
         // instantiate boneyard and hands
@@ -166,37 +241,55 @@ namespace MTDUserInterface
             computersHand = new Hand(boneyard, 2);
             Domino highestDouble;
             userHandPBs = new List<PictureBox>(10);
-            int pDIndex = playersHand.IndexOfHighDouble();
-            int cDIndex = computersHand.IndexOfHighDouble();
-            if(playersHand[pDIndex].Side1>computersHand[cDIndex].Side1)
-            {
-                //player goes first
-                highestDouble = playersHand[pDIndex];
-                playersHand.RemoveAt(pDIndex);
-                LoadDomino(enginePB, highestDouble);
-                userTrainStatusLabel.ForeColor = Color.Green;
-                computerTrainStatusLabel.ForeColor = Color.Red;
-                EnableUserMove();
-            }
-            else
-            {
-                //Computer goes first
-                highestDouble = computersHand[pDIndex];
-                computersHand.RemoveAt(cDIndex);
-                LoadDomino(enginePB, highestDouble);
-                userTrainStatusLabel.ForeColor = Color.Red;
-                computerTrainStatusLabel.ForeColor = Color.Green;
-                //MakeComputerMove();
-            }
-            playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
-            computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
-            for(int i=0;i<10;i++)
+            mexicanTrainPBS = new List<PictureBox> { mexTrainPB1,mexTrainPB2,mexTrainPB3,mexTrainPB4,mexTrainPB5 };
+            playersTrainPBS = new List<PictureBox> { userTrainPB1, userTrainPB2, userTrainPB3, userTrainPB4, userTrainPB5 };
+            computerTrainPBS = new List<PictureBox> { compTrainPB1, compTrainPB2, compTrainPB3, compTrainPB4, compTrainPB5 };
+
+            for (int i = 0; i < 10; i++)
             {
 
                 userHandPBs.Add(CreateUserHandPB(i));
                 nextDrawIndex++;
             }
             LoadHand(userHandPBs, playersHand);
+            int pDIndex = playersHand.IndexOfHighDouble();
+            int cDIndex = computersHand.IndexOfHighDouble();
+            if(cDIndex==-1||playersHand[pDIndex].Side1>computersHand[cDIndex].Side1)
+            {
+                //player goes first
+                highestDouble = playersHand[pDIndex];
+                playersHand.RemoveAt(pDIndex);
+                LoadDomino(enginePB, highestDouble);
+                //playersTrainPBS.RemoveAt(pDIndex);
+                userLabel.ForeColor = Color.Green;
+                computerLabel.ForeColor = Color.Red;
+                EnableUserMove();
+            }
+            else
+            {
+                //Computer goes first
+                highestDouble = computersHand[cDIndex];
+                computersHand.RemoveAt(cDIndex);
+                LoadDomino(enginePB, highestDouble);
+                userLabel.ForeColor = Color.Red;
+                computerLabel.ForeColor = Color.Green;
+                //MakeComputerMove();
+            }
+            playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
+            computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
+            //for(int i=0;i<10;i++)
+            //{
+
+            //    userHandPBs.Add(CreateUserHandPB(i));
+            //    nextDrawIndex++;
+            //}
+            //LoadHand(userHandPBs, playersHand);
+            playersTrain.Close();
+            userTrainStatusLabel.Text = CLOSED;
+            userTrainStatusLabel.ForeColor = Color.Red;
+            computersTrain.Close();
+            computerTrainStatusLabel.Text = CLOSED;
+            computerTrainStatusLabel.ForeColor = Color.Red;
 
         }
 
@@ -205,6 +298,7 @@ namespace MTDUserInterface
         // reset the nextDrawIndex to 15
         public void TearDown()
         {
+            
         }
         #endregion
 
@@ -219,7 +313,7 @@ namespace MTDUserInterface
         // the event handler for the menu item is enabled and disabled appropriately.
         private void whichTrainMenu_Opening(object sender, CancelEventArgs e)
         {
-			
+            userDominoInPlay = (Domino)sender;
             bool mustFlip = false;
             if (userDominoInPlay != null)
             {
@@ -262,19 +356,19 @@ namespace MTDUserInterface
         // sets the instance variables indexOfDominoInPlay and userDominoInPlay
         private void handPB_MouseDown(object sender, MouseEventArgs e)
         {
-			/*
+			
             PictureBox handPB = (PictureBox)sender;
             indexOfDominoInPlay = userHandPBs.IndexOf(handPB);
             if (indexOfDominoInPlay != -1)
             {
-                userDominoInPlay = userHand[indexOfDominoInPlay];
+                userDominoInPlay = playersHand[indexOfDominoInPlay];
                 if (e.Button == MouseButtons.Right)
                 {
                     whichTrainMenu.Show(handPB, 
                         handPB.Size.Width - 20, handPB.Size.Height - 20);
                 }
             }
-			*/
+			
         }
 
         // play on the mexican train, lets the computer take a move and then enables
@@ -308,15 +402,29 @@ namespace MTDUserInterface
             playersHand.Draw(boneyard);
             int index = playersHand.Count-1;
            
-            userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
+            PictureBox pB=(CreateUserHandPB(nextDrawIndex));
+            userHandPBs.Add(pB);
             nextDrawIndex++;
             LoadDomino(userHandPBs[index], playersHand[index]);
+            
         }
 
         // open the user's train, update the ui and let the computer make a move
         // enable the hand pbs so the user can make a move
         private void passButton_Click(object sender, EventArgs e)
         {
+            playersTrain.Open();
+            userTrainStatusLabel.Text = OPEN;
+            userTrainStatusLabel.ForeColor = Color.Green;
+            DisableUserHandPBs();
+            CompleteComputerMove();
+        }
+        /// <summary>
+        /// counts up scores and what not
+        /// </summary>
+        public void Win()
+        {
+
         }
 
         private void PlayMTDRightClick_Load(object sender, EventArgs e)

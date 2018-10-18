@@ -11,23 +11,23 @@ namespace MTDClasses
     public abstract class Train
     {
 
-        private List<Domino> dominos=new List<Domino>();
+        private List<Domino> dominos;
         private int engineValue;
 
       
         public Train()
         {
             //set engineine value to 12 and create list
-            this.engineValue = 12;
-            List<Domino> dominos = new List<Domino>();
+            this.EngineValue = 12;
+            dominos = new List<Domino>();
 
         }
 
         public Train(int engValue)
         {
             //set engine value to int engValue and create empty list
-            this.engineValue = engValue;
-            List<Domino> dominos = new List<Domino>();
+            this.EngineValue = engValue;
+            dominos = new List<Domino>();
 
         }
 
@@ -53,7 +53,9 @@ namespace MTDClasses
             }
             set
             {
+                //add validation
                 engineValue = value;
+                
             }
         }
 
@@ -174,21 +176,24 @@ namespace MTDClasses
 
         public void Play(Hand h, Domino d)
         {
-           Domino myDomino;
+           //call hand 
+           
            bool mustFlip;
-           bool flag = IsPlayable(d, out mustFlip);
+           bool flag = IsPlayable(h, d, out mustFlip);
            if(flag==false)
             {
                 throw new Exception("The Domino cannot be played.");
             }
            else if(mustFlip==true && flag==true)
             {
-                dominos.Add(d);
+                //dominos.Add(d);
+                Add(d);
             }
             else
             {
                 d.Flip();
-                dominos.Add(d);
+                // better to use the method i created. dominos.Add(d);
+                Add(d);
             }
         }
 

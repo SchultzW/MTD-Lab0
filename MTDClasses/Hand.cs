@@ -45,7 +45,7 @@ namespace MTDClasses
             
             if(numPlayers==2|numPlayers==3|numPlayers==4)
             {
-                for (int i = 0; i <= 10; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     handOfDominos.Add(by.Draw());
                 }
