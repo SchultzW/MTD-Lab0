@@ -62,6 +62,9 @@
             this.computerTrainItem = new System.Windows.Forms.ToolStripMenuItem();
             this.myTrainItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newHandButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.computerHandLabel = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.enginePB)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.compTrainPB5)).BeginInit();
@@ -452,11 +455,30 @@
             this.newHandButton.UseVisualStyleBackColor = true;
             this.newHandButton.Click += new System.EventHandler(this.newHandButton_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(24, 300);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(89, 13);
+            this.label2.TabIndex = 31;
+            this.label2.Text = "Computers Hand:";
+            // 
+            // computerHandLabel
+            // 
+            this.computerHandLabel.AutoSize = true;
+            this.computerHandLabel.Location = new System.Drawing.Point(120, 300);
+            this.computerHandLabel.Name = "computerHandLabel";
+            this.computerHandLabel.Size = new System.Drawing.Size(0, 13);
+            this.computerHandLabel.TabIndex = 32;
+            // 
             // PlayMTDRightClick
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(849, 606);
+            this.ClientSize = new System.Drawing.Size(824, 606);
+            this.Controls.Add(this.computerHandLabel);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.newHandButton);
             this.Controls.Add(this.userTrainStatusLabel);
             this.Controls.Add(this.computerTrainStatusLabel);
@@ -534,5 +556,8 @@
         private System.Windows.Forms.ToolStripMenuItem computerTrainItem;
         private System.Windows.Forms.ToolStripMenuItem myTrainItem;
         private System.Windows.Forms.Button newHandButton;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label computerHandLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }
