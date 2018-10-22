@@ -152,59 +152,66 @@ namespace MTDUserInterface
         // returns false
         public bool MakeComputerMove(bool canDraw)
         {
+            bool played = false;
             bool mustFlip = false;
-            foreach(Domino d in computersHand)
+            foreach (Domino d in computersHand)
             {
-                if(mexicanTrain.IsPlayable(computersHand, d, out mustFlip)==true)
+                if (mexicanTrain.IsPlayable(computersHand, d, out mustFlip) == true)
                 {
                     if (mustFlip == true)
                         d.Flip();
                     computersHand.Play(mexicanTrain);
                     mexicanTrain.Add(d);
-                    
+
                     LoadDomino(computerTrainPBS[0], d);
+                    played = true;
                     break;
                 }
-                else if(playersTrain.IsOpen==true)
+                else if (playersTrain.IsOpen == true)
                 {
-                    if(playersTrain.IsPlayable(computersHand, d, out mustFlip)==true)
+                    if (playersTrain.IsPlayable(computersHand, d, out mustFlip) == true)
                     {
                         if (mustFlip == true)
                             d.Flip();
                         computersHand.Play(playersTrain);
-                        
-                        LoadDomino(playersTrainPBS[0], d);
+
+                        LoadDomino(playersTrainPBS[0], d);played = true;
                         break;
                     }
-                }
-                else
-                {
-                    computersHand.Draw(boneyard);
-                    Domino drawedD = computersHand[computersHand.Count - 1];
-                    if (playersTrain.IsOpen == true && playersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == true)
-                    {
-                        if (mustFlip == true)
-                            d.Flip();
-                        computersHand.Play(playersTrain);
-                        LoadDomino(playersTrainPBS[0], d);
-                        break;
-                    }
-                    else if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == false)
-                    {
-
-                        if (mustFlip == true)
-                            d.Flip();
-                        computersHand.Play(playersTrain);
-
-                        LoadDomino(playersTrainPBS[0], d);
-                        break;
-                    }
-                    else
-                        EnableUserMove();
-
                 }
 
             }
+
+            if (played == false)
+            {
+
+
+                computersHand.Draw(boneyard);
+                Domino drawedD = computersHand[computersHand.Count - 1];
+                if (playersTrain.IsOpen == true && playersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == true)
+                {
+                    if (mustFlip == true)
+                        drawedD.Flip();
+                    computersHand.Play(playersTrain);
+                    LoadDomino(playersTrainPBS[0], drawedD);
+
+                }
+                else if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == false)
+                {
+
+                    if (mustFlip == true)
+                        drawedD.Flip();
+                    computersHand.Play(playersTrain);
+
+                    LoadDomino(playersTrainPBS[0], drawedD);
+
+                }
+                else
+                    EnableUserMove();
+            }
+                
+
+            
 			return true;
         }
 
@@ -221,11 +228,12 @@ namespace MTDUserInterface
             
             //System.Threading.Thread.Sleep(10000);//makes AI appear to be thinking?
             MakeComputerMove(false);
-            if (computersHand.Count == 0)
+            if (computersHand.Count == 0||playersHand.Count==0)
                 Win();
             else
                     EnableUserMove();
             computerHandLabel.Text = computersHand.Count.ToString();
+            boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
             EnableUserMove();
 
 
@@ -257,6 +265,7 @@ namespace MTDUserInterface
             bool canDraw = false;
             boneyard = new BoneYard(9);
             boneyard.Shuffle();
+            boneyard.AlmostEmptyBY += new BoneYard.ChangeHandlerBY(RespondToEmpty);
             playersHand = new Hand(boneyard, 2);
             computersHand = new Hand(boneyard, 2);
             Domino highestDouble;
@@ -275,21 +284,45 @@ namespace MTDUserInterface
             int pDIndex = playersHand.IndexOfHighDouble();
             int cDIndex = computersHand.IndexOfHighDouble();
 
-            //TO do: try to fix this i know there is a better way
-            if(cDIndex==-1||playersHand[pDIndex].Side1>computersHand[cDIndex].Side1)
+            bool playerFirst;
+            if(pDIndex==-1)
+            {
+                //comp goes first
+                playerFirst = false;
+                highestDouble = computersHand[cDIndex];
+            }
+            else if(cDIndex==-1)
             {
                 //player goes first
+                playerFirst = true;
                 highestDouble = playersHand[pDIndex];
-                playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
-                computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
-                mexicanTrain = new MexicanTrain(highestDouble.Side1);
-                playersTrain.Close();
-                userTrainStatusLabel.Text = CLOSED;
-                userTrainStatusLabel.ForeColor = Color.Red;
-                computersTrain.Close();
-                computerTrainStatusLabel.Text = CLOSED;
-                computerTrainStatusLabel.ForeColor = Color.Red;
-                computerHandLabel.Text = computersHand.Count.ToString();
+            }
+            else if (playersHand[pDIndex].Side1 > computersHand[cDIndex].Side1)
+            {
+                //player goes first
+                playerFirst = true;
+                highestDouble = playersHand[pDIndex];
+            }
+            else
+            {
+                //comp goes firt.
+                playerFirst = false;
+                highestDouble = computersHand[cDIndex];
+            }
+    playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
+            computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
+            mexicanTrain = new MexicanTrain(highestDouble.Side1);
+            playersTrain.Close();
+            userTrainStatusLabel.Text = CLOSED;
+            userTrainStatusLabel.ForeColor = Color.Red;
+            computersTrain.Close();
+            computerTrainStatusLabel.Text = CLOSED;
+            computerTrainStatusLabel.ForeColor = Color.Red;
+            computerHandLabel.Text = computersHand.Count.ToString();
+
+            if (playerFirst=true)
+            {
+                //player goes first              
                 playersHand.RemoveAt(pDIndex);
                 LoadDomino(enginePB, highestDouble);
                 //playersTrainPBS.RemoveAt(pDIndex);
@@ -303,24 +336,16 @@ namespace MTDUserInterface
             else
             {
                 //Computer goes first
-                highestDouble = computersHand[cDIndex];
-                playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
-                computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
-                mexicanTrain = new MexicanTrain(highestDouble.Side1);
-                playersTrain.Close();
-                userTrainStatusLabel.Text = CLOSED;
-                userTrainStatusLabel.ForeColor = Color.Red;
-                computersTrain.Close();
-                computerTrainStatusLabel.Text = CLOSED;
-                computerTrainStatusLabel.ForeColor = Color.Red;
-                computerHandLabel.Text = computersHand.Count.ToString();
+                
+                
                 computersHand.RemoveAt(cDIndex);
                 LoadDomino(enginePB, highestDouble);
                 userLabel.ForeColor = Color.Red;
                 computerLabel.ForeColor = Color.Green;
                 CompleteComputerMove();
             }
-           
+            boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
+
             //for(int i=0;i<10;i++)
             //{
 
@@ -343,7 +368,12 @@ namespace MTDUserInterface
         // reset the nextDrawIndex to 15
         public void TearDown()
         {
+            nextDrawIndex =15;
+            Hand playersHand = new Hand(boneyard,2);
+            Hand computersHand = new Hand(boneyard, 2);
             
+            
+
         }
         #endregion
 
@@ -351,8 +381,7 @@ namespace MTDUserInterface
         {
             InitializeComponent();
             //SetUp();    
-            timer1.Interval = (1000) * (1);              // Timer will tick evert second
-            timer1.Enabled = true;
+            
         }
 
         // when the user right clicks on a domino, a context sensitive menu appears that
@@ -377,7 +406,7 @@ namespace MTDUserInterface
                 {
                     mexicanTrainItem.ForeColor = Color.Red;
                 } 
-                if (computersTrain.IsPlayable(playersHand, userDominoInPlay, out mustFlip))
+                if (computersTrain.IsPlayable(playersHand, userDominoInPlay, out mustFlip)&&computersTrain.IsOpen==true)
                 {
                     computerTrainItem.ForeColor = Color.Green;
                     computerTrainItem.Click += new System.EventHandler(this.computerTrainItem_Click);
@@ -422,19 +451,52 @@ namespace MTDUserInterface
         // hand pbs so the user can make the next move.
         private void mexicanTrainItem_Click(object sender, EventArgs e)
         {
-
+            UserPlayOnTrain(playersHand[indexOfDominoInPlay], mexicanTrain, mexicanTrainPBS);
+            // RemovePBFromForm(d);
+            DisableUserHandPBs();
+            drawButton.Enabled = false;
+            passButton.Enabled = false;
+            CompleteComputerMove();
+            
         }
 
         // play on the computer train, lets the computer take a move and then enables
         // hand pbs so the user can make the next move.
         private void computerTrainItem_Click(object sender, EventArgs e)
         {
+            
+            if (computersTrain.IsOpen == true)
+            {
+
+
+                UserPlayOnTrain(playersHand[indexOfDominoInPlay], computersTrain, computerTrainPBS);
+                DisableUserHandPBs();
+                
+                drawButton.Enabled = false;
+                passButton.Enabled = false;
+                CompleteComputerMove();
+
+            }
+            else
+                MessageBox.Show("The computers train is closed please play on an open train.");
         }
 
         // play on the user train, lets the computer take a move and then enables
         // hand pbs so the user can make the next move.
         private void myTrainItem_Click(object sender, EventArgs e)
         {
+            
+            
+            
+            UserPlayOnTrain(playersHand[indexOfDominoInPlay], playersTrain, playersTrainPBS);
+           
+            
+            //RemovePBFromForm(d);
+            DisableUserHandPBs();
+
+            //drawButton.Enabled = false;
+            //passButton.Enabled = false;
+            CompleteComputerMove();
         }
 
         // tear down and then set up
@@ -460,9 +522,14 @@ namespace MTDUserInterface
             playersHand.Draw(boneyard);
             int index = playersHand.Count - 1;
 
-            userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
+            PictureBox pb = CreateUserHandPB(nextDrawIndex);
+            userHandPBs.Add(pb);
+            
+            //userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
             nextDrawIndex++;
-            LoadDomino(userHandPBs[index], playersHand[index]);
+            LoadDomino(pb, playersHand[index]);
+            //drawButton.Enabled = false;
+            boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
 
         }
 
@@ -470,15 +537,17 @@ namespace MTDUserInterface
         // enable the hand pbs so the user can make a move
         private void passButton_Click(object sender, EventArgs e)
         {
-            
 
+            drawButton.Enabled = false;
+            passButton.Enabled = false;
             playersTrain.Open();
             userTrainStatusLabel.Text = OPEN;
             userTrainStatusLabel.ForeColor = Color.Green;
             DisableUserHandPBs();
             CompleteComputerMove();
-            drawButton.Enabled = false;
-            passButton.Enabled = false;
+            drawButton.Enabled = true;
+            passButton.Enabled = true;
+            
 
         }
         /// <summary>
@@ -486,13 +555,29 @@ namespace MTDUserInterface
         /// </summary>
         public void Win()
         {
+            string winner = "";
+            int playerScore, compScore;
+            playerScore = playersHand.Score;
+            compScore = computersHand.Score;
+            if (playerScore > compScore)
+                winner = "Player wins!";
+            else if (playerScore < compScore)
+                winner = "Computer wins!";
+            else
+                winner = ("It is a tie");
+            MessageBox.Show("The Game is over " + winner + " The player had " + playerScore + " and the computer had" + compScore + ".");
+            DisableUserHandPBs();
+            drawButton.Enabled = false;
+            passButton.Enabled = false;
 
         }
 
         private void PlayMTDRightClick_Load(object sender, EventArgs e)
         {
             // register the boneyard almost empty event and it's delegate here
+            
             SetUp();
+           
         }
 
 		// event handler for handling the boneyard almost empty event

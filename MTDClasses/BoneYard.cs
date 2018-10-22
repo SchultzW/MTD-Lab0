@@ -10,7 +10,7 @@ namespace MTDClasses
     public class BoneYard:IEnumerable<Domino>
     {
         private List<Domino> boneYardList;
-        public delegate void ChangeHandlerBY(List<Domino> list);
+        public delegate void ChangeHandlerBY(BoneYard list);
         public event ChangeHandlerBY AlmostEmptyBY;
         public void HandleEmptyBY(List<Domino> list) { }
         /// <summary>
@@ -53,7 +53,7 @@ namespace MTDClasses
                 }
                 
             }
-            AlmostEmptyBY = new ChangeHandlerBY(HandleEmptyBY);
+            
         }
         /// <summary>
         /// shuffles the dominos in the boneyard list.
@@ -84,7 +84,11 @@ namespace MTDClasses
         {
             //checks if boneyard is empty
             if (boneYardList.Count == 0)
+            {
+                AlmostEmptyBY(this);
                 return true;
+            }
+                
             else
                 return false;
         }
@@ -106,6 +110,7 @@ namespace MTDClasses
         /// <returns></returns>
         public Domino Draw()
         {
+            
             Domino d = boneYardList[0];
             boneYardList.RemoveAt(0);
             return d;

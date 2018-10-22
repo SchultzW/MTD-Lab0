@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace MTDClasses
     /// <summary>
     /// Represents a generic Train for MTD
     /// </summary>
-    public abstract class Train
+    public abstract class Train:IEnumerable<Domino>
     {
 
         private List<Domino> dominos;
@@ -206,6 +207,30 @@ namespace MTDClasses
             }
             return message;
         }
+        public void RemoveAt(int index)
+        {
+            dominos.RemoveAt(index);
+        }
+        public void Clear(Train t)
+        {
+            foreach(Domino d in t)
+            {
+                t.RemoveAt(0);
+            }
+        }
+        public IEnumerator<Domino> GetEnumerator()
+        {
+            foreach (Domino item in dominos)
+            {
+                yield return item;
+            }
+        }
+
         
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

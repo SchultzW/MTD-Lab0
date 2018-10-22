@@ -259,7 +259,7 @@ namespace MTDClasses
         }
 
         /// <summary>
-        /// Finds a domino with a certain number of dots in the hand.
+        /////// Finds a domino with a certain number of dots in the hand.
         /// If it can find the domino, it removes it from the hand and returns it.
         /// Otherwise it returns null
         /// </summary>
@@ -417,6 +417,11 @@ namespace MTDClasses
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+        public void Clear(Hand h)
+        {
+            foreach (Domino d in h)
+                h.RemoveAt(0);
         }
     }
 }

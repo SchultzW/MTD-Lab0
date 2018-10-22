@@ -65,6 +65,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.computerHandLabel = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.label3 = new System.Windows.Forms.Label();
+            this.boneyardCountLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.enginePB)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.compTrainPB5)).BeginInit();
@@ -472,11 +474,30 @@
             this.computerHandLabel.Size = new System.Drawing.Size(0, 13);
             this.computerHandLabel.TabIndex = 32;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(244, 299);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(86, 13);
+            this.label3.TabIndex = 33;
+            this.label3.Text = "Boneyard Count:";
+            // 
+            // boneyardCountLabel
+            // 
+            this.boneyardCountLabel.AutoSize = true;
+            this.boneyardCountLabel.Location = new System.Drawing.Point(337, 300);
+            this.boneyardCountLabel.Name = "boneyardCountLabel";
+            this.boneyardCountLabel.Size = new System.Drawing.Size(0, 13);
+            this.boneyardCountLabel.TabIndex = 34;
+            // 
             // PlayMTDRightClick
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(824, 606);
+            this.Controls.Add(this.boneyardCountLabel);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.computerHandLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.newHandButton);
@@ -559,5 +580,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label computerHandLabel;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label boneyardCountLabel;
     }
 }
