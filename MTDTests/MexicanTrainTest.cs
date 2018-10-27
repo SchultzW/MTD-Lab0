@@ -28,8 +28,39 @@ namespace MTDTests
             d = new Domino(10, 10);
             d1 = new Domino(5, 5);
             d3 = new Domino(12, 12);
-            d4 = new Domino(12, 0);
+            d4 = new Domino(0, 12);
+            h = new Hand();
+        }
+        [Test]
+        public void TestPlayNoFLip()
+        {
+            mT1.Play(h, d3);
+            Assert.AreEqual(mT1.Count, 1);
+            Assert.AreEqual(mT1.PlayableValue, 12);
+        }
+        [Test]
+        public void TestPLayFlip()
+        {
 
+            mT1.Play(h, d4);
+            Assert.AreEqual(mT1.Count, 1);
+            Assert.AreEqual(mT1.PlayableValue, 12);
+        }
+        [Test]
+        public void TestPLayInvalid()
+        {
+            try
+            {
+                mT1.Play(h, d);
+                Assert.Fail();
+            }
+            catch
+            {
+                Assert.Pass();
+            }
+            
+            Assert.AreEqual(mT1.Count, 0);
+            Assert.AreEqual(mT1.PlayableValue, 12);
         }
         [Test]
         public void TestConstructors()

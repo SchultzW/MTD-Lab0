@@ -28,7 +28,8 @@ namespace MTDUserInterface
         int indexOfDominoInPlay;
         const string OPEN = "Open";
         const string CLOSED = "Closed";
-        Timer timer = new Timer();
+        int playerLoadCount = 0;
+        int compLoadCount = 0;
         
         
 
@@ -124,12 +125,19 @@ namespace MTDUserInterface
         {
 
             int index=playersHand.IndexOfDomino(d.Side1, d.Side2);
-            playersTrainPBS.RemoveAt(index);
-
-            RemovePBFromForm(playersTrainPBS[index]);
             playersHand.Play(d, train);
-            LoadDomino(trainPBs[0], d);
+            //playersTrainPBS.RemoveAt(index);
             
+            RemovePBFromForm(userHandPBs[index]);
+            userHandPBs.RemoveAt(index);
+
+            //userHandPBs.RemoveAt(index);
+            ////playersTrainPBS.RemoveAt(index);
+
+            //RemovePBFromForm(playersTrainPBS[index]);
+            //playersHand.Play(d, train);
+            //LoadDomino(trainPBs[0], d);
+            AddToPB(train,trainPBs,d);
 
             DisableUserHandPBs();
             passButton.Enabled = false;
@@ -140,6 +148,7 @@ namespace MTDUserInterface
         // adds a domino picture to a train
         public void ComputerPlayOnTrain(Domino d, Train train, List<PictureBox> trainPBs, int pbIndex)
         {
+
         }
 
         // ai for computer move.
@@ -163,7 +172,8 @@ namespace MTDUserInterface
                     computersHand.Play(mexicanTrain);
                     mexicanTrain.Add(d);
 
-                    LoadDomino(computerTrainPBS[0], d);
+                    AddToPB(computersTrain, computerTrainPBS,d);
+                    //LoadDomino(computerTrainPBS[0], d);
                     played = true;
                     break;
                 }
@@ -174,15 +184,15 @@ namespace MTDUserInterface
                         if (mustFlip == true)
                             d.Flip();
                         computersHand.Play(playersTrain);
-
-                        LoadDomino(playersTrainPBS[0], d);played = true;
+                        AddToPB(computersTrain, computerTrainPBS,d);
+                        //LoadDomino(playersTrainPBS[0], d);played = true;
                         break;
                     }
                 }
 
             }
 
-            if (played == false)
+            if (played == false)//makes draw and then play
             {
 
 
@@ -193,7 +203,8 @@ namespace MTDUserInterface
                     if (mustFlip == true)
                         drawedD.Flip();
                     computersHand.Play(playersTrain);
-                    LoadDomino(playersTrainPBS[0], drawedD);
+                    AddToPB(computersTrain, computerTrainPBS,drawedD);
+                    //LoadDomino(playersTrainPBS[0], drawedD);
 
                 }
                 else if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == false)
@@ -202,8 +213,8 @@ namespace MTDUserInterface
                     if (mustFlip == true)
                         drawedD.Flip();
                     computersHand.Play(playersTrain);
-
-                    LoadDomino(playersTrainPBS[0], drawedD);
+                    AddToPB(computersTrain, computerTrainPBS,drawedD);
+                    //LoadDomino(playersTrainPBS[0], drawedD);
 
                 }
                 else
@@ -214,7 +225,29 @@ namespace MTDUserInterface
             
 			return true;
         }
+        /// <summary>
+        /// needed some sort of method to add and update the pictureboxes for when they ahve more than 5
+        /// seems more sense to make a method for it than having to constatly repeat code
+        /// many thanks to kaiser for helping me with this code.
+        /// </summary>
+        /// <param name="train"></param>
+        /// <param name="trainPB"></param>
+        public void AddToPB(Train train, List<PictureBox> trainPB, Domino d)
+        {
+            if (train.Count >= 5)
+            {
+                for (int i = 0; i < trainPB.Count; i++)
+                {
+                    LoadDomino(trainPB[i], train[train.Count - (5 - i)]);
+                }
+            }
+            else if (train.Count.Equals(0)) 
+                LoadDomino(trainPB[0], d);
+            else
+                LoadDomino(trainPB[train.Count - 1],train[train.Count-1]);
+            //loadCount++;
 
+        }
         // update labels on the UI and disable the users hand
         // call MakeComputerMove (maybe twice)
         // update the labels on the UI
@@ -228,13 +261,14 @@ namespace MTDUserInterface
             
             //System.Threading.Thread.Sleep(10000);//makes AI appear to be thinking?
             MakeComputerMove(false);
-            if (computersHand.Count == 0||playersHand.Count==0)
+            if (computersHand.Count == 0||playersHand.Count==0||boneyard.IsEmpty()==true)
                 Win();
             else
                     EnableUserMove();
             computerHandLabel.Text = computersHand.Count.ToString();
             boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
             EnableUserMove();
+
 
 
 
@@ -272,13 +306,14 @@ namespace MTDUserInterface
             userHandPBs = new List<PictureBox>(10);
             mexicanTrainPBS = new List<PictureBox> { mexTrainPB1,mexTrainPB2,mexTrainPB3,mexTrainPB4,mexTrainPB5 };
             playersTrainPBS = new List<PictureBox> { userTrainPB1, userTrainPB2, userTrainPB3, userTrainPB4, userTrainPB5 };
+            //playersTrainPBS = new List<PictureBox> { userTrainPB5, userTrainPB4, userTrainPB3, userTrainPB2, userTrainPB1 };
             computerTrainPBS = new List<PictureBox> { compTrainPB1, compTrainPB2, compTrainPB3, compTrainPB4, compTrainPB5 };
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i <playersHand.Count; i++, nextDrawIndex++)
             {
 
-                userHandPBs.Add(CreateUserHandPB(i));
-                nextDrawIndex++;
+                userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
+                
             }
             LoadHand(userHandPBs, playersHand);
             int pDIndex = playersHand.IndexOfHighDouble();
@@ -309,7 +344,7 @@ namespace MTDUserInterface
                 playerFirst = false;
                 highestDouble = computersHand[cDIndex];
             }
-    playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
+            playersTrain = new PlayerTrain(playersHand, highestDouble.Side1);
             computersTrain = new PlayerTrain(computersHand, highestDouble.Side1);
             mexicanTrain = new MexicanTrain(highestDouble.Side1);
             playersTrain.Close();
@@ -320,16 +355,18 @@ namespace MTDUserInterface
             computerTrainStatusLabel.ForeColor = Color.Red;
             computerHandLabel.Text = computersHand.Count.ToString();
 
-            if (playerFirst=true)
+            if (playerFirst==true)
             {
                 //player goes first              
                 playersHand.RemoveAt(pDIndex);
+                //userHandPBs.RemoveAt(pDIndex);
                 LoadDomino(enginePB, highestDouble);
                 //playersTrainPBS.RemoveAt(pDIndex);
                 userLabel.ForeColor = Color.Green;
                 computerLabel.ForeColor = Color.Red;
                 PictureBox pb = userHandPBs[pDIndex];
                 RemoveDominoFromPB(pDIndex, userHandPBs);
+                userHandPBs.RemoveAt(pDIndex);
                 RemovePBFromForm(pb);
                 EnableUserMove();
             }
@@ -518,18 +555,25 @@ namespace MTDUserInterface
             //LoadDomino(userHandPBs[index], playersHand[index]);
 
             ////////////////////////////////////////////////////////
+            if (computersHand.Count == 0 || playersHand.Count == 0 || boneyard.IsEmpty() == true)
+                Win();
+            else
+            {
 
-            playersHand.Draw(boneyard);
-            int index = playersHand.Count - 1;
+                playersHand.Draw(boneyard);
+                int index = playersHand.Count - 1;
 
-            PictureBox pb = CreateUserHandPB(nextDrawIndex);
-            userHandPBs.Add(pb);
+                PictureBox pb = CreateUserHandPB(nextDrawIndex);
+                userHandPBs.Add(pb);
+
+                //userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
+                nextDrawIndex++;
+                LoadDomino(pb, playersHand[index]);
+                //drawButton.Enabled = false;
+                boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
+            }
+            drawButton.Enabled = false;
             
-            //userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
-            nextDrawIndex++;
-            LoadDomino(pb, playersHand[index]);
-            //drawButton.Enabled = false;
-            boneyardCountLabel.Text = boneyard.Count<Domino>().ToString();
 
         }
 
@@ -559,13 +603,13 @@ namespace MTDUserInterface
             int playerScore, compScore;
             playerScore = playersHand.Score;
             compScore = computersHand.Score;
-            if (playerScore > compScore)
-                winner = "Player wins!";
-            else if (playerScore < compScore)
-                winner = "Computer wins!";
+            if (playerScore < compScore)
+                winner = "player wins!";
+            else if (playerScore > compScore)
+                winner = "computer wins!";
             else
                 winner = ("It is a tie");
-            MessageBox.Show("The Game is over " + winner + " The player had " + playerScore + " and the computer had" + compScore + ".");
+            MessageBox.Show("The Game is over the " + winner + " The player had " + playerScore + " points and the computer had " + compScore + " points.");
             DisableUserHandPBs();
             drawButton.Enabled = false;
             passButton.Enabled = false;

@@ -193,8 +193,11 @@ namespace MTDClasses
             {
                 d = handOfDominos[i];
                 if (d.Side1.Equals(side1Value) && d.Side2.Equals(side2Value))
+                {
                     index = i;
-                break;
+                    break;
+                }
+                   
             }
             return index;
         }
