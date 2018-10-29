@@ -163,67 +163,92 @@ namespace MTDUserInterface
         {
             bool played = false;
             bool mustFlip = false;
-            foreach (Domino d in computersHand)
+            try
             {
-                if (mexicanTrain.IsPlayable(computersHand, d, out mustFlip) == true)
-                {
-                    if (mustFlip == true)
-                        d.Flip();
-                    computersHand.Play(mexicanTrain);
-                    mexicanTrain.Add(d);
 
-                    AddToPB(computersTrain, computerTrainPBS,d);
-                    //LoadDomino(computerTrainPBS[0], d);
-                    played = true;
-                    break;
-                }
-                else if (playersTrain.IsOpen == true)
+
+                foreach (Domino d in computersHand)
                 {
-                    if (playersTrain.IsPlayable(computersHand, d, out mustFlip) == true)
+                    if(computersTrain.IsPlayable(computersHand,d,out mustFlip)==true)
                     {
                         if (mustFlip == true)
                             d.Flip();
-                        computersHand.Play(playersTrain);
-                        AddToPB(computersTrain, computerTrainPBS,d);
-                        //LoadDomino(playersTrainPBS[0], d);played = true;
+                        computersHand.Play(computersTrain);
+                        computersTrain.Add(d);
+
+                        AddToPB(computersTrain, computerTrainPBS, d);
+                        //LoadDomino(computerTrainPBS[0], d);
+                        played = true;
                         break;
                     }
+                    else if (mexicanTrain.IsPlayable(computersHand, d, out mustFlip) == true)
+                    {
+                        if (mustFlip == true)
+                            d.Flip();
+                        computersHand.Play(mexicanTrain);
+                        mexicanTrain.Add(d);
+
+                        AddToPB(mexicanTrain, mexicanTrainPBS, d);
+                        //LoadDomino(computerTrainPBS[0], d);
+                        played = true;
+                        break;
+                    }
+                    else if (playersTrain.IsOpen == true)
+                    {
+                        if (playersTrain.IsPlayable(computersHand, d, out mustFlip) == true)
+                        {
+                            if (mustFlip == true)
+                                d.Flip();
+                            computersHand.Play(playersTrain);
+                            AddToPB(playersTrain, playersTrainPBS, d);
+                            //LoadDomino(playersTrainPBS[0], d);played = true;
+                            break;
+                        }
+                    }
+
                 }
-
             }
-
-            if (played == false)//makes draw and then play
+            catch
             {
 
 
-                computersHand.Draw(boneyard);
-                Domino drawedD = computersHand[computersHand.Count - 1];
-                if (playersTrain.IsOpen == true && playersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == true)
-                {
-                    if (mustFlip == true)
-                        drawedD.Flip();
-                    computersHand.Play(playersTrain);
-                    AddToPB(computersTrain, computerTrainPBS,drawedD);
-                    //LoadDomino(playersTrainPBS[0], drawedD);
-
-                }
-                else if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == false)
+                if (played == false)//makes draw and then play
                 {
 
-                    if (mustFlip == true)
-                        drawedD.Flip();
-                    computersHand.Play(playersTrain);
-                    AddToPB(computersTrain, computerTrainPBS,drawedD);
-                    //LoadDomino(playersTrainPBS[0], drawedD);
+
+                    computersHand.Draw(boneyard);
+                    Domino drawedD = computersHand[computersHand.Count - 1];
+                    if (playersTrain.IsOpen == true && playersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == true)
+                    {
+                        if (mustFlip == true)
+                            drawedD.Flip();
+                        computersHand.Play(playersTrain);
+                        AddToPB(computersTrain, computerTrainPBS, drawedD);
+                        //LoadDomino(playersTrainPBS[0], drawedD);
+
+                    }
+                    else if (computersTrain.IsPlayable(computersHand, drawedD, out mustFlip) == false)
+                    {
+
+                        if (mustFlip == true)
+                            drawedD.Flip();
+                        computersHand.Play(playersTrain);
+                        AddToPB(computersTrain, computerTrainPBS, drawedD);
+                        //LoadDomino(playersTrainPBS[0], drawedD);
+
+                    }
+                    else
+                        MessageBox.Show("The Computer Passes.");
+
 
                 }
-                else
-                    EnableUserMove();
-            }
                 
+                    
+            }
 
-            
-			return true;
+
+            EnableUserMove();
+            return true;
         }
         /// <summary>
         /// needed some sort of method to add and update the pictureboxes for when they ahve more than 5
@@ -408,8 +433,25 @@ namespace MTDUserInterface
             nextDrawIndex =15;
             Hand playersHand = new Hand(boneyard,2);
             Hand computersHand = new Hand(boneyard, 2);
-            
-            
+            foreach(PictureBox pb in userHandPBs)
+            {
+                RemovePBFromForm(pb);
+            }
+            foreach (PictureBox pb in playersTrainPBS)
+            {
+                RemovePBFromForm(pb);
+            }
+            foreach (PictureBox pb in mexicanTrainPBS)
+            {
+                RemovePBFromForm(pb);
+            }
+            foreach (PictureBox pb in computerTrainPBS)
+            {
+                RemovePBFromForm(pb);
+            }
+
+
+
 
         }
         #endregion
@@ -565,6 +607,7 @@ namespace MTDUserInterface
 
                 PictureBox pb = CreateUserHandPB(nextDrawIndex);
                 userHandPBs.Add(pb);
+                EnableHandPB(pb);
 
                 //userHandPBs.Add(CreateUserHandPB(nextDrawIndex));
                 nextDrawIndex++;
